@@ -98,7 +98,7 @@ Expect `{"balance":"1000.00"}` for Alice after a fresh seed.
 **Deposit** — add ₹42.50
 
 ```bash
-curl -sS -X POST "http://localhost:3000/deposit" \
+curl -sS -X POST "http://localhost:3200/deposit" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"amount":"42.50"}'
