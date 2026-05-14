@@ -3,6 +3,8 @@ import "dotenv/config";
 import { AppDataSource } from "../config/data-source";
 import { User } from "../entities/User";
 
+const INR_PAISE_PER_RUPEE = 100;
+
 async function seed() {
   try {
     await AppDataSource.initialize();
@@ -10,8 +12,8 @@ async function seed() {
 
     const userRepository = AppDataSource.getRepository(User);
     const seedUsers = [
-      { email: "alice@example.com", pin: 1234, balance: 1000 },
-      { email: "bob@example.com", pin: 5678, balance: 500 },
+      { email: "alice@example.com", pin: 1234, balanceRupees: 1000 },
+      { email: "bob@example.com", pin: 5678, balanceRupees: 500 },
     ];
 
     for (const seedUser of seedUsers) {
@@ -22,7 +24,7 @@ async function seed() {
       const user = new User();
       user.email = seedUser.email;
       user.pinHash = bcrypt.hashSync(seedUser.pin.toString(), 10);
-      user.balance = seedUser.balance;
+      user.balanceInMinorUnits = seedUser.balanceRupees * INR_PAISE_PER_RUPEE;
       await userRepository.save(user);
     }
     console.log("Seeding completed!");

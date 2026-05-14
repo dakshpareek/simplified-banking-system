@@ -11,8 +11,8 @@ export class User {
   @Column()
   pinHash!: string;
 
-  @Column({ type: "decimal", precision: 12, scale: 2, default: 0 })
-  balance!: number;
+  @Column({ type: "integer", default: 0 })
+  balanceInMinorUnits!: number;
 
   @Column({ nullable: true })
   authToken!: string;

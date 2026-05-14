@@ -1,5 +1,7 @@
 # Local Setup
 
+---
+
 ## Requirements
 
 * Node.js 20+
@@ -27,8 +29,7 @@ docker run --name glomopay-postgres \
 Create a `.env` file in the project root:
 
 ```env
-PORT=3000
-
+PORT=3200
 DATABASE_URL=postgres://postgres:postgres@localhost:5434/glomopay_assignment
 ```
 
@@ -42,24 +43,65 @@ npm install
 
 ---
 
+## Seed Users (Alice & Bob)
+
+Run once (or after resetting the database):
+
+```bash
+npm run seed
+```
+
+---
+
 ## Run Development Server
 
 ```bash
 npm run dev
 ```
 
+The server listens on `PORT` from `.env` (default **3200**).
+
 ---
 
-## Test Login API
+## Test APIs (`curl`)
+
+**Login**
 
 ```bash
-curl --request POST \
-  --url http://localhost:3200/auth/login \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "email": "alice@example.com",
-    "pin": "1234"
-  }'
+curl -sS -X POST "http://localhost:3200/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"alice@example.com","pin":"1234"}'
+```
+
+Copy `token` from the response.
+
+**Balance** (Bearer token from login)
+
+```bash
+TOKEN="<paste-token-here>"
+
+curl -sS "http://localhost:3200/balance" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Expect `{"balance":"1000.00"}` for Alice after a fresh seed.
+
+**Deposit** — add ₹42.50
+
+```bash
+curl -sS -X POST "http://localhost:3000/deposit" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":"42.50"}'
+```
+
+**Invalid deposit** (wrong type, too many decimals, zero, or not positive)
+
+```bash
+curl -sS -w "\nHTTP:%{http_code}\n" -X POST "http://localhost:3200/deposit" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":"0"}'
 ```
 
 ---

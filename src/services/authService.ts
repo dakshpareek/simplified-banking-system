@@ -33,6 +33,11 @@ export async function authenticateUser(email: string, pin: string): Promise<Auth
   }
 }
 
+export async function findUserByToken(token: string): Promise<User | null> {
+  const userRepository = AppDataSource.getRepository(User);
+  return userRepository.findOne({ where: { authToken: token } });
+}
+
 function generateAuthToken() {
   return crypto.randomUUID();
 }
