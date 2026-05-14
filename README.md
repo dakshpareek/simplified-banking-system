@@ -2,6 +2,15 @@
 
 ---
 
+## Assumptions
+
+- Money is stored internally as INR minor units (paise) to avoid floating-point precision issues.
+- Deposit amounts use string input (e.g. `"42.50"`) instead of JSON numbers for deterministic parsing.
+- Authentication tokens do not expire for assignment simplicity.
+- Deposits execute inside a database transaction with pessimistic row locking to avoid lost updates during concurrent balance modifications.
+
+---
+
 ## Requirements
 
 * Node.js 20+
